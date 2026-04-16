@@ -52,3 +52,55 @@ def encrypt_character(char, shift1, shift2):
     else:
         # Return the character completely unchanged
         return char
+
+
+
+def encrypt_file(shift1, shift2):
+    """
+    Reads raw_text.txt, encrypts every character, and writes
+    the result to encrypted_text.txt.
+
+    Parameters:
+        shift1 : first shift value provided by the user
+        shift2 : second shift value provided by the user
+    """
+
+
+    # STEP 1 - Read the original file
+    # Open raw_text.txt in read mode ("r")
+    # 'encoding="utf-8"' handles special characters safely
+    input_file = open("raw_text.txt", "r", encoding="utf-8")
+
+    # Read the entire contents as one big string
+    original_text = input_file.read()
+
+    # Always close the file after reading
+    input_file.close()
+
+
+    # STEP 2 - Encrypt every character
+
+    # We'll build the encrypted text one character at a time
+    encrypted_text = ""
+
+    # Loop through every single character in the original text
+    for char in original_text:
+
+        # Encrypt this character and add it to our result string
+        encrypted_text = encrypted_text + encrypt_character(char, shift1, shift2)
+
+
+    # STEP 3 - Write the encrypted text to a new file
+
+    # Open encrypted_text.txt in write mode ("w")
+    # This creates the file if it doesn't exist, or overwrites it if it does
+    output_file = open("encrypted_text.txt", "w", encoding="utf-8")
+
+    # Write our encrypted string to the file
+    output_file.write(encrypted_text)
+
+    # Always close the file after writing
+    output_file.close()
+
+    # Let the user know it worked
+    print("Encryption complete! Saved to encrypted_text.txt")
