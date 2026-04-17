@@ -324,3 +324,90 @@ def process_expression(expression):
         "tree":   "ERROR",
         "result": "ERROR"
     }
+
+    try:
+        # step 1 tokenize the raw string
+        tokens = tokenize(expression)
+        result["tokens"] = tokens_to_string(tokens)
+
+        # step 2 parse the tokens into a tree
+        tree = parse(tokens)
+        result["tree"] = tree_to_string(tree)
+
+        # step 3 evaluate the tree to get the final number
+        value = evaluate(tree)
+        result["result"] = value
+
+    except ValueError:
+        pass    # something went wrong, keep whatever ERRORs remain
+
+    return result
+
+
+def format_output_block(result):
+    """
+    Turn a result dictionary into the four-line output block. """
+
+    if result["result"] == "ERROR":
+        result_line = "ERROR"
+    else:
+        result_line = format_number(result["result"])  # clean number formatting
+
+    lines = [
+        f"Input: {result['input']}",
+        f"Tree: {result['tree']}",
+        f"Tokens: {result['tokens']}",
+        f"Result: {result_line}"
+    ]
+
+    return "\n".join(lines)
+
+
+def evaluate_file(input_path):
+    """
+    Read a file of expressions, evaluate each one, and write output.txt. """
+
+    with open(input_path, "r") as f:
+        lines = f.readlines()
+
+    all_results = []
+
+    for line in lines:
+        expression = line.strip()  # remove newline characters
+
+        if expression == "":
+            continue    # skip blank lines in the input
+
+        result = process_expression(expression)
+        all_results.append(result)
+
+    # join all blocks with a blank line between them
+    blocks = []
+    for result in all_results:
+        blocks.append(format_output_block(result))
+
+    output_text = "\n\n".join(blocks)
+
+    # write to the same folder as the input file
+    input_dir   = os.path.dirname(os.path.abspath(input_path))
+    output_path = os.path.join(input_dir, "output.txt")
+
+    with open(output_path, "w") as f:
+        f.write(output_text)
+
+    print(f"Output written to: {output_path}")
+
+    return all_results
+
+
+# ENTRY POINT
+# Run from the command line: python main.py sample_input.txt
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python main.py <input_file>")
+    else:
+        results = evaluate_file(sys.argv[1])
+        for r in results:
+            print(format_output_block(r))
+            print()
