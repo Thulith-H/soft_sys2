@@ -405,7 +405,7 @@ def evaluate_file(input_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python main.py <input_file>")
+        print("Usage: python evaluator.py <input_file>")
     else:
         results = evaluate_file(sys.argv[1])
         for r in results:
