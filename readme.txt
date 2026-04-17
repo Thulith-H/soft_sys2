@@ -3,7 +3,7 @@ HOW TO RUN
 Folder Structure:
 soft_sys2/
     Problem_1/
-        encriptor.py
+        encryptor.py
         raw_text.txt
     Problem_2/
         evaluator.py
@@ -13,7 +13,7 @@ soft_sys2/
 Open terminal inside the soft_sys2 folder or each subfolder, then run:
 
 Q1:
-python Problem_1/encriptor.py
+python Problem_1/encryptor.py
 (it will ask for shift1 and shift2 then run automatically and save files)
 
 Q2:
