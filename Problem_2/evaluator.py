@@ -401,7 +401,7 @@ def evaluate_file(input_path):
 
 
 # ENTRY POINT
-# Run from the command line: python main.py sample_input.txt
+# Run from the command line: python evaluator.py sample_input.txt
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
