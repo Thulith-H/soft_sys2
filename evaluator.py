@@ -221,3 +221,73 @@ def parse(tokens):
         raise ValueError(f"Unexpected token after expression: {current_token(state)}")
 
     return tree
+
+# EVALUATOR AND TREE PRINTER
+# Both walk the tree recursively, one computes a number, one builds a string.
+
+
+def format_number(value):
+    """
+    Format a number for display. """
+    # drop the decimal if it is a whole number e.g. 8.0 becomes 8
+    if value == int(value):
+        return str(int(value))
+    return str(round(value, 4))  # otherwise round to 4 decimal places
+
+
+def tree_to_string(node):
+    """
+    Convert a parse tree into a readable string. """
+    # leaf node, just return the number as a string
+    if node["type"] == "num":
+        return format_number(node["value"])
+
+    # neg node wraps its child in (neg ...)
+    if node["type"] == "neg":
+        operand_str = tree_to_string(node["operand"])  # recurse on the child
+        return f"(neg {operand_str})"
+
+    # binary op puts the operator first then left and right children
+    if node["type"] == "bin-op":
+        left_str  = tree_to_string(node["left"])   # recurse left
+        right_str = tree_to_string(node["right"])  # recurse right
+        return f"({node['op']} {left_str} {right_str})"
+    else:
+        return None
+
+
+def evaluate(node):
+    """
+    Walk the parse tree and compute the final numeric result.
+    """
+    # base case, just return the number stored in the node
+    if node["type"] == "num":
+        return node["value"]
+
+    # negate whatever the child evaluates to
+    if node["type"] == "neg":
+        operand_val = evaluate(node["operand"])  # recurse on child
+        return -operand_val
+
+    # binary op, evaluate both sides then apply the operator
+    if node["type"] == "bin-op":
+        left_val  = evaluate(node["left"])   # recurse left
+        right_val = evaluate(node["right"])  # recurse right
+
+        if node["op"] == "+":
+            return left_val + right_val
+
+        if node["op"] == "-":
+            return left_val - right_val
+
+        if node["op"] == "*":
+            return left_val * right_val
+
+        if node["op"] == "/":
+            if right_val == 0:
+                raise ValueError("Division by zero")
+            return left_val / right_val
+
+        raise ValueError(f"Unknown operator: {node['op']}")  # should never reach here
+
+    raise ValueError(f"Unknown node type: {node['type']}")   # should never reach here
