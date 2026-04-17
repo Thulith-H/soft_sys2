@@ -291,3 +291,36 @@ def evaluate(node):
         raise ValueError(f"Unknown operator: {node['op']}")  # should never reach here
 
     raise ValueError(f"Unknown node type: {node['type']}")   # should never reach here
+
+# FILE I/O
+# Reads the input file, processes each expression, writes output.txt.
+
+
+def tokens_to_string(tokens):
+    """
+    Convert a list of token dictionaries into a display string. """
+    parts = []
+
+    for token in tokens:
+        if token["type"] == "END":
+            parts.append("[END]")
+        elif token["type"] == "NUM":
+            parts.append(f"[NUM:{format_number(token['value'])}]")
+        else:
+            # covers OP, LPAREN, RPAREN
+            parts.append(f"[{token['type']}:{token['value']}]")
+
+    return " ".join(parts)
+
+
+def process_expression(expression):
+    """
+    Run the full pipeline on a single expression string. """
+
+    # start with ERROR for everything, fill in as we go
+    result = {
+        "input":  expression,
+        "tokens": "ERROR",
+        "tree":   "ERROR",
+        "result": "ERROR"
+    }
